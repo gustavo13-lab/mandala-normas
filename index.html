@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f6f1e7">
+<link rel="manifest" href="manifest.webmanifest?v=1.1">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=1.1">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png?v=1.1">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=1.1">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Normas Mandala">
+<title>Mandala · Normas Generales · V1.1</title>
+<style>
+:root{--cream:#f6f1e7;--green:#123f2e;--gold:#b79b62;--line:#ddd4c4;--ink:#20231f}
+*{box-sizing:border-box} body{margin:0;background:#ece7de;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+.app{max-width:900px;margin:auto;background:var(--cream);min-height:100vh;padding:18px}
+header{text-align:center;padding:14px 0 20px;border-bottom:1px solid var(--line)} header img{width:112px;height:112px;object-fit:contain}
+h1{color:var(--green);font-family:Georgia,serif;margin:8px 0 4px;font-size:30px} .version{font-weight:700;color:#74654e}
+.intro,.rule,.sign,.done{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;margin:14px 0}
+.rule h2{font-size:17px;color:var(--green);margin:0 0 10px} .rule p{line-height:1.5;margin:8px 0}
+label{display:block;font-weight:700;margin:12px 0 6px} input,select{width:100%;padding:13px;border:1px solid #cfc6b7;border-radius:10px;font:inherit;background:#fff}
+canvas{width:100%;height:190px;border:2px dashed #b9aa91;border-radius:12px;background:#fff;touch-action:none}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px} button{padding:13px;border:0;border-radius:11px;font-weight:800;font-size:15px}
+.primary{background:var(--green);color:#fff} .secondary{background:#e9e2d7;color:#26352d} .danger{background:#fff;border:1px solid #cfc6b7}
+.accept{display:flex;gap:10px;align-items:flex-start;margin:18px 0} .accept input{width:22px;height:22px;margin:0}
+#signedActions{display:none} .stamp{font-weight:700;color:var(--green)} .small{font-size:13px;color:#6c675e}
+@media print{body{background:#fff}.app{max-width:none;padding:0}button,.no-print{display:none!important}.rule,.intro,.sign,.done{break-inside:avoid;box-shadow:none}}
+
+.management-link{margin-top:14px;background:#e9e2d7;color:#123f2e;border:1px solid #cfc6b7;padding:10px 14px}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:20;padding:18px;overflow:auto}
+.modal-card{max-width:1000px;margin:30px auto;background:#f6f1e7;border-radius:18px;padding:20px}
+.modal-head{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.modal-head h2{color:#123f2e}.close{background:#e9e2d7;color:#123f2e}
+.filters{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.filters input,.filters select{margin:0}
+.records{margin-top:14px}.record{background:white;border:1px solid #ddd4c4;border-radius:12px;padding:14px;margin:10px 0}
+.record b{color:#123f2e}.record-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+@media(max-width:700px){.filters{grid-template-columns:1fr}.actions{grid-template-columns:1fr}}
+@media print{.modal{display:none!important}}
+</style></head><body><div class="app">
+<header><img src="icon-512.png" alt="Mandala"><h1>Normas Generales de Convivencia y Funcionamiento</h1><div>GRUPO MANDALA · PERSONAL DE RESTAURACIÓN</div><div class="version">Versión 1.1</div><button class="management-link no-print" onclick="openManagement()">GERENCIA / SUPERVISIÓN</button></header>
+<div class="intro">Estas normas son de aplicación general a todo el personal del Grupo Mandala, independientemente de su puesto, categoría o funciones, y tienen como objetivo establecer unas pautas comunes de convivencia y funcionamiento que garanticen un entorno de trabajo basado en el respeto, la responsabilidad, la seguridad, la profesionalidad y el trabajo en equipo.</div>
+<section class="rule"><h2>1. PUNTUALIDAD, ASISTENCIA Y REGISTRO DE JORNADA</h2><p>Todo trabajador deberá cumplir el horario establecido y presentarse con tiempo suficiente para comenzar a trabajar a la hora indicada, correctamente uniformado y preparado.</p><p>Es obligatorio registrar correctamente la entrada, salida y todas las pausas o descansos. El fichaje es personal e intransferible y no podrá realizarse por otro compañero.</p><p>Las ausencias o retrasos deberán comunicarse al responsable lo antes posible y justificarse cuando corresponda.</p></section>
+<section class="rule"><h2>2. UNIFORMIDAD, HIGIENE E IMAGEN PERSONAL</h2><p>El uniforme deberá utilizarse completo y mantenerse limpio, cuidado y en buenas condiciones.</p><p>Se deberá mantener una correcta higiene personal y una imagen adecuada al entorno profesional, evitando elementos que puedan resultar inadecuados para el trabajo o para la manipulación de alimentos.</p></section>
+<section class="rule"><h2>3. RESPETO Y CONVIVENCIA</h2><p>Todos los trabajadores deberán mantener un trato educado, respetuoso y profesional con compañeros, responsables, clientes y cualquier persona relacionada con el establecimiento.</p><p>No se permitirán insultos, amenazas, humillaciones, intimidaciones, agresiones, discriminación, acoso ni comportamientos que perjudiquen la convivencia y el ambiente de trabajo.</p></section>
+<section class="rule"><h2>4. TRABAJO EN EQUIPO</h2><p>Todo el personal deberá mantener una actitud colaborativa.</p><p>Cuando las necesidades del servicio lo requieran, se prestará apoyo a otros compañeros dentro de las funciones que puedan realizarse.</p><p>El buen funcionamiento del restaurante es responsabilidad del conjunto del equipo.</p></section>
+<section class="rule"><h2>5. CUMPLIMIENTO DE LAS INSTRUCCIONES DE TRABAJO</h2><p>Los trabajadores deberán cumplir las instrucciones relacionadas con la organización y funcionamiento del establecimiento transmitidas por sus responsables, siempre dentro de sus funciones y obligaciones laborales.</p><p>Las dudas, desacuerdos o incidencias deberán comunicarse de manera respetuosa y por los canales correspondientes.</p></section>
+<section class="rule"><h2>6. USO DEL TELÉFONO MÓVIL</h2><p>Durante la jornada laboral no se utilizará el teléfono móvil personal salvo por una necesidad justificada, emergencia o autorización del responsable.</p><p>Nunca deberá utilizarse de manera que interfiera en el trabajo, perjudique el servicio o se realice de forma inapropiada delante de los clientes.</p></section>
+<section class="rule"><h2>7. PAUSAS, DESCANSOS Y SALIDAS</h2><p>Las pausas y descansos deberán realizarse de acuerdo con la organización del servicio y las indicaciones del responsable.</p><p>No se deberá abandonar el puesto de trabajo o el establecimiento durante la jornada sin conocimiento o autorización cuando esta sea necesaria.</p></section>
+<section class="rule"><h2>8. ALCOHOL Y DROGAS</h2><p>Queda prohibido el consumo de alcohol y drogas dentro de los establecimientos antes, durante y después de la jornada laboral.</p><p>Una vez finalizado el turno, el trabajador no podrá permanecer en el establecimiento consumiendo alcohol, aunque ya haya fichado su salida.</p><p>Asimismo, no se podrá iniciar o desarrollar la jornada laboral bajo los efectos del alcohol o de cualquier sustancia que pueda afectar a la seguridad, al comportamiento profesional o al correcto desempeño del trabajo.</p></section>
+<section class="rule"><h2>9. ORDEN, LIMPIEZA Y CUIDADO DEL ESTABLECIMIENTO</h2><p>Podrá considerarse incumplimiento el uso incorrecto, negligente o no autorizado de maquinaria, mobiliario, instalaciones, productos o cualquier otro material de la empresa, especialmente cuando pueda provocar daños, pérdidas, riesgos o perjudicar el normal funcionamiento del establecimiento.</p><p>La gravedad de la conducta se valorará según las circunstancias, la reiteración y los posibles perjuicios ocasionados.</p></section>
+<section class="rule"><h2>10. SEGURIDAD E HIGIENE</h2><p>Todo el personal deberá cumplir las normas de higiene, seguridad alimentaria y prevención de riesgos establecidas.</p><p>Cualquier situación que pueda representar un riesgo para trabajadores, clientes o instalaciones deberá comunicarse inmediatamente al responsable.</p></section>
+<section class="rule"><h2>11. COMPORTAMIENTO PROFESIONAL</h2><p>Durante la jornada se deberá mantener una actitud profesional, evitando discusiones, gritos, comportamientos inapropiados o cualquier actuación que pueda perjudicar el funcionamiento o la imagen del establecimiento.</p><p>El trato al cliente deberá ser siempre educado, cercano, respetuoso y profesional.</p></section>
+<section class="rule"><h2>12. BUENA FE Y RESPONSABILIDAD</h2><p>Todo trabajador deberá actuar con responsabilidad y honestidad.</p><p>No se permitirán apropiaciones de dinero, productos o bienes, manipulaciones indebidas de cobros o registros, consumos no autorizados, falsificación de información o cualquier actuación que suponga abuso de confianza.</p></section>
+<section class="rule"><h2>13. CONFIDENCIALIDAD Y PRIVACIDAD</h2><p>La información interna de la empresa, así como aquella relacionada con trabajadores, clientes, funcionamiento, documentación o datos a los que se tenga acceso por razón del trabajo, deberá tratarse con responsabilidad y confidencialidad.</p></section>
+<section class="rule"><h2>14. DESCUENTOS, CONSUMOS E INVITACIONES</h2><p>Queda prohibido utilizar descuentos, invitaciones o cualquier otro beneficio de empleado de forma indebida o aplicarlos a amigos, familiares o terceras personas cuando no corresponda.</p><p>Si un trabajador desea invitar a un familiar o amigo, deberá hacerlo a título personal y asumir el coste correspondiente.</p><p>El uso indebido de descuentos, consumos o invitaciones podrá dar lugar a las medidas disciplinarias que correspondan y, cuando proceda, a la retirada de dichos beneficios.</p></section>
+<section class="rule"><h2>15. FAMILIARES, AMIGOS Y VISITAS PERSONALES</h2><p>Durante la jornada laboral, los trabajadores no podrán utilizar el establecimiento para recibir o atender visitas personales de familiares o amigos.</p><p>Cuando un familiar o amigo de un trabajador acuda al establecimiento como cliente, deberá recibir el mismo trato y seguir el mismo procedimiento que cualquier otro cliente.</p><p>El trabajador no podrá hacerse cargo directamente de su servicio: no deberá tomarle la comanda, servirle, gestionar su mesa, cobrarle la cuenta, realizar invitaciones ni aplicar beneficios que no correspondan.</p><p>Asimismo, durante la jornada laboral deberán evitarse conversaciones o permanencias prolongadas con familiares o amigos que interfieran en las funciones del trabajador o en el correcto desarrollo del servicio.</p></section>
+<section class="rule"><h2>16. FALTAS LEVES</h2><p>Podrán considerarse faltas leves aquellos incumplimientos de menor gravedad relacionados, entre otros, con retrasos, descuidos, falta de orden, incumplimientos ocasionales de las normas internas, uso no autorizado del móvil o comportamientos que afecten ligeramente al normal funcionamiento del trabajo, teniendo siempre en cuenta las circunstancias concretas y su posible reiteración.</p></section>
+<section class="rule"><h2>17. FALTAS GRAVES</h2><p>Podrán considerarse faltas graves los incumplimientos de mayor importancia o la reiteración de determinadas conductas leves.</p><p>Entre ellas pueden encontrarse ausencias injustificadas, incumplimientos relevantes del horario o registro de jornada, desobediencia, abandono injustificado del puesto, negligencias importantes, faltas de respeto o incumplimientos que provoquen perjuicios al servicio, a compañeros, clientes o a la empresa.</p></section>
+<section class="rule"><h2>18. FALTAS MUY GRAVES</h2><p>Se considerarán de especial gravedad aquellas conductas que supongan un incumplimiento grave de las obligaciones laborales.</p><p>Podrán incluir, según las circunstancias, fraude, hurto, robo, abuso de confianza, agresiones, acoso, discriminación, amenazas graves, desobediencia grave, daños intencionados, incumplimientos graves de seguridad o conductas relacionadas con alcohol o drogas que afecten gravemente al trabajo o a la seguridad.</p></section>
+<section class="rule"><h2>19. RÉGIMEN DISCIPLINARIO</h2><p>El incumplimiento de estas normas podrá dar lugar a las medidas disciplinarias que correspondan en función de la naturaleza de los hechos, su gravedad, reiteración y circunstancias.</p><p>La calificación de una conducta como falta leve, grave o muy grave y la sanción que, en su caso, corresponda se realizará conforme a la normativa laboral y al convenio colectivo aplicable.</p></section>
+<section class="rule"><h2>20. CONOCIMIENTO DE LAS NORMAS</h2><p>Todo trabajador deberá conocer y respetar estas normas como parte de sus obligaciones profesionales.</p><p>Su finalidad es mantener un entorno de trabajo basado en el respeto, la responsabilidad, la seguridad, la profesionalidad y el trabajo en equipo.</p></section>
+<div class="intro" style="text-align:center;font-weight:800;color:var(--green)">RESPETO · RESPONSABILIDAD · PROFESIONALIDAD · TRABAJO EN EQUIPO</div>
+<section class="sign" id="signBox">
+<h2>Lectura y aceptación</h2>
+<label>Nombre y apellidos</label><input id="name" autocomplete="name">
+<label>DNI / NIE</label><input id="dni">
+<label>Teléfono / WhatsApp</label><input id="whatsapp" type="tel" inputmode="tel" placeholder="+34 600 000 000">
+<label>Restaurante</label><select id="restaurant"><option value="">Selecciona restaurante</option><option>Farini Fustera</option><option>Mandala Port</option><option>Rull</option><option>Mandala Fustera</option><option>Farini Benissa</option></select>
+<label>Puesto</label><input id="position">
+<div class="accept"><input type="checkbox" id="accept"><span>Declaro que he leído y comprendido las Normas Generales de Convivencia y Funcionamiento del Grupo Mandala, versión 1.1, y acepto su cumplimiento. Autorizo el uso del teléfono indicado exclusivamente para comunicaciones laborales relacionadas con estas normas y sus futuras actualizaciones.</span></div>
+<label>Firma del trabajador/a</label><canvas id="signature"></canvas>
+<div class="actions no-print"><button class="danger" onclick="clearSig()">BORRAR FIRMA</button><button class="primary" onclick="confirmSign()">CONFIRMAR Y FIRMAR</button></div>
+</section>
+<section class="done" id="signedActions"><div class="stamp" id="stamp"></div><p class="small">Documento firmado y bloqueado. Versión 1.1.</p>
+<div class="actions no-print"><button class="primary" onclick="saveDatabase()">GUARDAR</button><button class="secondary" onclick="window.print()">IMPRIMIR</button><button class="secondary" onclick="downloadDocument()">DESCARGAR</button></div></section>
+</div>
+<div class="modal" id="managementModal">
+ <div class="modal-card">
+  <div class="modal-head"><h2>Gerencia / Supervisión · Normas firmadas</h2><button class="close" onclick="closeManagement()">CERRAR</button></div>
+  <div id="loginPanel">
+   <p>Acceso restringido.</p>
+   <label>Usuario</label><select id="mgrUser">
+<option value="Felipe Ezquerdo">Felipe Ezquerdo · Gerencia</option>
+<option value="Vicent Gimenez">Vicent Gimenez · Gerencia</option>
+<option value="Gustavo Vinazza">Gustavo Vinazza · Supervisión</option>
+<option value="Pedro Jorro">Pedro Jorro · Supervisión</option>
+</select>
+   <label>Código de acceso</label><input id="mgrCode" type="password" inputmode="numeric">
+   <button class="primary" style="margin-top:12px" onclick="managementLogin()">ENTRAR</button>
+  </div>
+  <div id="historyPanel" style="display:none">
+   <div class="record"><b id="loggedUser"></b><br><span class="small" id="loggedRole"></span>
+   <div class="record-actions"><button class="secondary" onclick="changeOwnPassword()">CAMBIAR CLAVE</button><button class="secondary" onclick="managementLogout()">CERRAR SESIÓN</button></div></div>
+   <p class="small">Histórico de documentos firmados guardados en Database/Supabase.</p>
+   <div class="filters">
+    <input id="fName" placeholder="Nombre o apellidos" oninput="renderRecords()">
+    <input id="fDni" placeholder="DNI / NIE" oninput="renderRecords()">
+    <select id="fRestaurant" onchange="renderRecords()"><option value="">Todos los restaurantes</option><option>Farini Fustera</option><option>Mandala Port</option><option>Rull</option><option>Mandala Fustera</option><option>Farini Benissa</option></select>
+    <input id="fPosition" placeholder="Puesto" oninput="renderRecords()">
+    <input id="fVersion" placeholder="Versión (ej. 1.1)" oninput="renderRecords()">
+    <input id="fDate" type="date" onchange="renderRecords()"><select id="fStatus" onchange="renderRecords()"><option value="">Todos</option><option value="current">Versión actual firmada</option><option value="older">Pendiente de versión actual</option></select>
+   </div>
+   <div class="actions"><button class="primary" onclick="loadRecords()">ACTUALIZAR DESDE DATABASE</button><button class="secondary" onclick="clearFilters()">LIMPIAR FILTROS</button></div>
+   <div id="records" class="records"></div>
+  </div>
+ </div>
+</div>
+
+<script>
+const VERSION='1.1';
+const SUPABASE_URL='https://hjuxmpkcxyzdudeirrwr.supabase.co';
+const SUPABASE_KEY='sb_publishable_TyFTWuFnxvlz3sDRF7f6lw_dZcFTnYe';
+const SUPABASE_TABLE='normas_firmadas';
+let managementRecords=[];
+const MANAGEMENT_USERS={
+ 'Felipe Ezquerdo':{role:'Gerencia'},
+ 'Vicent Gimenez':{role:'Gerencia'},
+ 'Gustavo Vinazza':{role:'Supervisión'},
+ 'Pedro Jorro':{role:'Supervisión'}
+};
+let loggedManagementUser=null;
+function passwordKey(u){return 'mandala_normas_pin_'+u.toLowerCase().replace(/[^a-z0-9]+/g,'_')}
+function getUserPassword(u){return localStorage.getItem(passwordKey(u))||'2026'}
+
+const canvas=document.getElementById('signature'),ctx=canvas.getContext('2d');let drawing=false,hasSignature=false,signedRecord=null;
+function resizeCanvas(){const r=canvas.getBoundingClientRect();const old=hasSignature?canvas.toDataURL():null;canvas.width=Math.round(r.width*devicePixelRatio);canvas.height=Math.round(r.height*devicePixelRatio);ctx.scale(devicePixelRatio,devicePixelRatio);ctx.lineWidth=2.2;ctx.lineCap='round';ctx.strokeStyle='#17251e';if(old){let i=new Image();i.onload=()=>ctx.drawImage(i,0,0,r.width,r.height);i.src=old}}
+resizeCanvas();addEventListener('resize',resizeCanvas);
+function pt(e){const r=canvas.getBoundingClientRect(),t=e.touches?e.touches[0]:e;return [t.clientX-r.left,t.clientY-r.top]}
+function start(e){e.preventDefault();drawing=true;hasSignature=true;let [x,y]=pt(e);ctx.beginPath();ctx.moveTo(x,y)}
+function move(e){if(!drawing)return;e.preventDefault();let[x,y]=pt(e);ctx.lineTo(x,y);ctx.stroke()}
+function end(){drawing=false};['mousedown','touchstart'].forEach(x=>canvas.addEventListener(x,start,{passive:false}));['mousemove','touchmove'].forEach(x=>canvas.addEventListener(x,move,{passive:false}));['mouseup','mouseleave','touchend','touchcancel'].forEach(x=>canvas.addEventListener(x,end));
+function clearSig(){ctx.clearRect(0,0,canvas.width,canvas.height);hasSignature=false}
+function confirmSign(){
+ const name=document.getElementById('name').value.trim(),dni=document.getElementById('dni').value.trim(),whatsapp=document.getElementById('whatsapp').value.trim(),restaurant=document.getElementById('restaurant').value,position=document.getElementById('position').value.trim();
+ if(!name||!dni||!whatsapp||!restaurant||!position)return alert('Completa nombre, DNI/NIE, teléfono/WhatsApp, restaurante y puesto.');
+ if(!document.getElementById('accept').checked)return alert('Debes marcar la declaración de lectura y aceptación.');
+ if(!hasSignature)return alert('Falta la firma.');
+ if(!confirm('¿Confirmar la firma? Después el documento quedará bloqueado.'))return;
+ const now=new Date(); signedRecord={nombre:name,dni_nie:dni,restaurante:restaurant,puesto:position,version:VERSION,whatsapp:whatsapp,firmado_en:now.toISOString(),firma_png:canvas.toDataURL('image/png'),aceptado:true};
+ document.querySelectorAll('#signBox input,#signBox select,#signBox button').forEach(x=>x.disabled=true);canvas.style.pointerEvents='none';
+ document.getElementById('stamp').textContent='Firmado por '+name+' · '+now.toLocaleString('es-ES');
+ document.getElementById('signedActions').style.display='block';localStorage.setItem('mandala_normas_ultimo',JSON.stringify(signedRecord));
+ document.getElementById('signedActions').scrollIntoView({behavior:'smooth'});
+}
+
+function buildFullEvidenceHTML(record){
+ const ruleNodes=[...document.querySelectorAll('.rule')];
+ const rules=ruleNodes.map(n=>'<div class="rule">'+n.innerHTML+'</div>').join('');
+ return `<!doctype html><html><head><meta charset="utf-8"><title>Normas Mandala · ${esc(record.nombre)} · V${esc(record.version)}</title>
+ <style>
+ body{font-family:Arial,sans-serif;max-width:900px;margin:auto;padding:32px;color:#222;line-height:1.45}
+ h1{margin-bottom:5px} h2{margin-top:0}.meta{border:1px solid #ddd;padding:16px;border-radius:10px;margin:20px 0}
+ .rule{page-break-inside:avoid;margin:18px 0}.rule h3{margin-bottom:7px}.accept{margin-top:28px;padding:16px;border:1px solid #bbb}
+ .signature{margin-top:30px;page-break-inside:avoid}.signature img{display:block;max-width:650px;width:100%;border:1px solid #ccc;margin-top:10px}
+ @media print{body{max-width:none;padding:12mm}.rule{break-inside:avoid}.signature{break-inside:avoid}}
+ </style></head><body>
+ <h1>GRUPO MANDALA</h1><h2>Normas Generales · Versión ${esc(record.version)}</h2>
+ <div class="meta"><b>${esc(record.nombre)}</b><br>DNI/NIE: ${esc(record.dni_nie)}<br>WhatsApp: ${esc(record.whatsapp||'—')}<br>Restaurante: ${esc(record.restaurante)}<br>Puesto: ${esc(record.puesto)}</div>
+ ${rules}
+ <div class="accept"><b>DECLARACIÓN DE ACEPTACIÓN</b><p>Declaro que he leído y comprendido las Normas Generales de Convivencia y Funcionamiento del Grupo Mandala, versión ${esc(record.version)}, y acepto su cumplimiento.</p>
+ <p><b>Firmado:</b> ${new Date(record.firmado_en).toLocaleString('es-ES')}</p></div>
+ <div class="signature"><h3>Firma del trabajador</h3><img src="${record.firma_png}" alt="Firma"></div>
+ </body></html>`;
+}
+async function saveDatabase(){
+ if(!signedRecord)return alert('Primero confirma la firma.');
+ if(!signedRecord.documento_html)signedRecord.documento_html=buildFullEvidenceHTML(signedRecord);
+ if(SUPABASE_URL.startsWith('PON_')||SUPABASE_KEY.startsWith('PON_'))return alert('Falta conectar esta aplicación con Supabase.');
+ try{let r=await fetch(SUPABASE_URL+'/rest/v1/'+SUPABASE_TABLE,{method:'POST',headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(signedRecord)});if(!r.ok)throw new Error(await r.text());alert('Documento firmado guardado en Database.')}catch(e){alert('No se pudo guardar en Database: '+e.message)}
+}
+function downloadDocument(){
+ if(!signedRecord)return alert('Primero confirma la firma.');
+ const doc='<!doctype html><html><head><meta charset="utf-8"><title>Normas Mandala</title></head><body style="font-family:Arial;max-width:850px;margin:auto;padding:30px"><h1>GRUPO MANDALA</h1><h2>Normas Generales · Versión '+VERSION+'</h2><p><b>'+signedRecord.nombre+'</b><br>DNI/NIE: '+signedRecord.dni_nie+'<br>WhatsApp: '+signedRecord.whatsapp+'<br>'+signedRecord.restaurante+' · '+signedRecord.puesto+'<br>Firmado: '+new Date(signedRecord.firmado_en).toLocaleString('es-ES')+'</p><p>Documento firmado electrónicamente tras la lectura y aceptación de las Normas Generales de Convivencia y Funcionamiento.</p><h3>Firma</h3><img style="max-width:600px;border:1px solid #ccc" src="'+signedRecord.firma_png+'"></body></html>';
+ const blob=new Blob([doc],{type:'text/html;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Normas_Mandala_'+signedRecord.nombre.replace(/\\s+/g,'_')+'_V'+VERSION+'.html';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+function sendWhatsApp(i){
+ const x=window._filteredRecords[i];if(!x||!x.whatsapp)return alert('Este empleado no tiene teléfono/WhatsApp guardado.');
+ let phone=String(x.whatsapp).replace(/\D/g,'');if(phone.length===9)phone='34'+phone;
+ const link=location.origin+location.pathname;
+ const msg='Hola '+x.nombre+'. Hay una nueva versión de las Normas Generales de Grupo Mandala (versión '+VERSION+'). Puedes revisarla y firmarla aquí: '+link;
+ window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msg),'_blank');
+}
+function openManagement(){
+ document.getElementById('managementModal').style.display='block';
+ document.getElementById('loginPanel').style.display='block';
+ document.getElementById('historyPanel').style.display='none';
+}
+function closeManagement(){document.getElementById('managementModal').style.display='none';document.getElementById('mgrCode').value=''}
+function managementLogin(){
+ const u=document.getElementById('mgrUser').value,c=document.getElementById('mgrCode').value;
+ if(c!==getUserPassword(u))return alert('Contraseña incorrecta.');
+ loggedManagementUser=u;
+ document.getElementById('loggedUser').textContent=u;
+ document.getElementById('loggedRole').textContent=MANAGEMENT_USERS[u].role;
+ document.getElementById('loginPanel').style.display='none';
+ document.getElementById('historyPanel').style.display='block';
+ document.getElementById('mgrCode').value='';
+ loadRecords();
+}
+function managementLogout(){
+ loggedManagementUser=null;document.getElementById('historyPanel').style.display='none';document.getElementById('loginPanel').style.display='block';document.getElementById('mgrCode').value='';
+}
+function changeOwnPassword(){
+ if(!loggedManagementUser)return;
+ const current=prompt('Introduce tu clave actual:');if(current===null)return;
+ if(current!==getUserPassword(loggedManagementUser))return alert('La clave actual no es correcta.');
+ const next=prompt('Introduce la nueva clave:');if(!next||next.trim().length<4)return alert('La nueva clave debe tener al menos 4 caracteres.');
+ const confirmPin=prompt('Repite la nueva clave:');if(confirmPin!==next)return alert('Las claves no coinciden.');
+ localStorage.setItem(passwordKey(loggedManagementUser),next.trim());alert('Clave actualizada correctamente.');
+}
+async function loadRecords(){
+ if(SUPABASE_URL.startsWith('PON_')||SUPABASE_KEY.startsWith('PON_')) return alert('Falta conectar esta aplicación con Database/Supabase.');
+ try{
+  const r=await fetch(SUPABASE_URL+'/rest/v1/'+SUPABASE_TABLE+'?select=*&order=firmado_en.desc',{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}});
+  if(!r.ok) throw new Error(await r.text());
+  managementRecords=await r.json(); renderRecords();
+ }catch(e){alert('No se pudo cargar el histórico: '+e.message)}
+}
+function clearFilters(){['fName','fDni','fPosition','fVersion','fDate'].forEach(id=>document.getElementById(id).value='');document.getElementById('fRestaurant').value='';document.getElementById('fStatus').value='';renderRecords()}
+function renderRecords(){
+ const n=document.getElementById('fName').value.toLowerCase(),d=document.getElementById('fDni').value.toLowerCase(),r=document.getElementById('fRestaurant').value,p=document.getElementById('fPosition').value.toLowerCase(),v=document.getElementById('fVersion').value.toLowerCase(),date=document.getElementById('fDate').value,status=document.getElementById('fStatus').value;
+ const latest={}; managementRecords.forEach(x=>{const k=(x.dni_nie||'').toLowerCase();if(!latest[k]||new Date(x.firmado_en)>new Date(latest[k].firmado_en))latest[k]=x});
+ const rows=Object.values(latest).filter(x=>(!n||(x.nombre||'').toLowerCase().includes(n))&&(!d||(x.dni_nie||'').toLowerCase().includes(d))&&(!r||x.restaurante===r)&&(!p||(x.puesto||'').toLowerCase().includes(p))&&(!v||(x.version||'').toLowerCase().includes(v))&&(!date||(x.firmado_en||'').slice(0,10)===date)&&(!status||(status==='current'?x.version===VERSION:x.version!==VERSION)));
+ const box=document.getElementById('records');
+ if(!rows.length){box.innerHTML='<div class="record">No hay documentos que coincidan con la búsqueda.</div>';return}
+ box.innerHTML=rows.map((x,i)=>`<div class="record"><b>${esc(x.nombre)}</b> · ${esc(x.dni_nie)}<br>WhatsApp: ${esc(x.whatsapp||'—')}<br>${esc(x.restaurante)} · ${esc(x.puesto)} · Versión ${esc(x.version)}<br><span class="small">${new Date(x.firmado_en).toLocaleString('es-ES')}</span><div class="record-actions"><button class="secondary" onclick="viewRecord(${i})">VER EVIDENCIA</button><button class="primary" onclick="saveEvidence(${i})">GUARDAR</button><button class="secondary" onclick="printRecord(${i})">IMPRIMIR</button><button class="secondary" onclick="downloadRecord(${i})">DESCARGAR</button><button class="secondary" onclick="deleteRecord(${i})">ELIMINAR</button>${x.version!==VERSION&&x.whatsapp?`<button class="primary" onclick="sendWhatsApp(${i})">ENVIAR POR WHATSAPP</button>`:''}</div></div>`).join('');
+ window._filteredRecords=rows;
+}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function evidenceHTML(x){
+ if(x.documento_html)return x.documento_html;
+ return buildFullEvidenceHTML(x);
+}
+function viewRecord(i){
+ const x=window._filteredRecords[i];if(!x)return;
+ const w=window.open('','_blank');if(!w)return alert('El navegador ha bloqueado la ventana. Permite ventanas emergentes para ver la evidencia.');
+ w.document.open();w.document.write(evidenceHTML(x));w.document.close();
+}
+function printRecord(i){
+ const x=window._filteredRecords[i];if(!x)return;
+ const w=window.open('','_blank');if(!w)return alert('El navegador ha bloqueado la impresión. Permite ventanas emergentes.');
+ w.document.open();w.document.write(evidenceHTML(x));w.document.close();
+ const go=()=>{w.focus();w.print()}; if(w.document.readyState==='complete')setTimeout(go,350);else w.onload=()=>setTimeout(go,350);
+}
+function downloadRecord(i){
+ const x=window._filteredRecords[i];if(!x)return;
+ const blob=new Blob([evidenceHTML(x)],{type:'text/html;charset=utf-8'}),a=document.createElement('a');
+ a.href=URL.createObjectURL(blob);a.download='Normas_Mandala_'+(x.nombre||'empleado').replace(/\s+/g,'_')+'_V'+x.version+'_FIRMADO.html';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+function saveEvidence(i){downloadRecord(i)}
+async function deleteRecord(i){
+ const x=window._filteredRecords[i];if(!x)return;
+ if(!confirm('¿Eliminar definitivamente esta evidencia de Database? Esta acción no se puede deshacer.'))return;
+ try{const r=await fetch(SUPABASE_URL+'/rest/v1/'+SUPABASE_TABLE+'?id=eq.'+encodeURIComponent(x.id),{method:'DELETE',headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Prefer':'return=minimal'}});
+ if(!r.ok)throw new Error(await r.text());alert('Evidencia eliminada de Database.');await loadRecords()}catch(e){alert('No se pudo eliminar: '+e.message)}
+}
+</script></body></html>
