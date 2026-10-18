@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es"><head><meta charset="utf-8">
+<html lang="es"><head><meta name="referrer" content="no-referrer"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#f6f1e7">
 <link rel="manifest" href="manifest.webmanifest?v=1.1">
@@ -16,6 +16,8 @@ h1{color:var(--green);font-family:Georgia,serif;margin:8px 0 4px;font-size:30px}
 .rule h2{font-size:17px;color:var(--green);margin:0 0 10px} .rule p{line-height:1.5;margin:8px 0}
 label{display:block;font-weight:700;margin:12px 0 6px} input,select{width:100%;padding:13px;border:1px solid #cfc6b7;border-radius:10px;font:inherit;background:#fff}
 canvas{width:100%;height:190px;border:2px dashed #b9aa91;border-radius:12px;background:#fff;touch-action:none}
+/* Zona de firma con contraste alto; el documento archivado exporta tinta negra sobre blanco. */
+#signature{background:#211d19!important;border:2px dashed #d6ae65!important;touch-action:none}
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px} button{padding:13px;border:0;border-radius:11px;font-weight:800;font-size:15px}
 .primary{background:var(--green);color:#fff} .secondary{background:#e9e2d7;color:#26352d} .danger{background:#fff;border:1px solid #cfc6b7}
 .accept{display:flex;gap:10px;align-items:flex-start;margin:18px 0} .accept input{width:22px;height:22px;margin:0}
@@ -174,6 +176,7 @@ button.primary,.primary,.management-link{background:linear-gradient(135deg,#c994
 <div class="intro" style="text-align:center;font-weight:800;color:var(--green)">RESPETO · RESPONSABILIDAD · PROFESIONALIDAD · TRABAJO EN EQUIPO</div>
 <section class="sign" id="signBox">
 <h2>Lectura y aceptación</h2>
+<p id="invitationNotice" class="small" style="display:none;padding:12px;border:1px solid #c7ad78;border-radius:10px">Enlace personal verificado. Comprueba tu nombre y escribe tu DNI/NIE y teléfono de contacto tal como aparecen en tu ficha laboral antes de firmar.</p>
 <label>Nombre y apellidos</label><input id="name" autocomplete="name">
 <label>DNI / NIE</label><input id="dni">
 <label>Teléfono / WhatsApp</label><input id="whatsapp" type="tel" inputmode="tel" placeholder="+34 600 000 000">
@@ -192,8 +195,8 @@ button.primary,.primary,.management-link{background:linear-gradient(135deg,#c994
   <div id="loginPanel">
    <p>Acceso restringido.</p>
    <label>Usuario</label><select id="mgrUser">
-<option value="Felipe Ezquerdo">Felipe Ezquerdo · Gerencia</option>
-<option value="Vicent Gimenez">Vicent Gimenez · Gerencia</option>
+<option value="Felipe Izquierdo">Felipe Izquierdo · Gerencia</option>
+<option value="Vicent Giménez">Vicent Giménez · Gerencia</option>
 <option value="Gustavo Vinazza">Gustavo Vinazza · Supervisión</option>
 <option value="Pedro Jorro">Pedro Jorro · Supervisión</option>
 </select>
@@ -225,14 +228,20 @@ button.primary,.primary,.management-link{background:linear-gradient(135deg,#c994
        <div><label>Nombre y apellidos</label><input id="workerName" autocomplete="name"></div>
        <div><label>DNI / NIE</label><input id="workerDni"></div>
        <div><label>Teléfono / WhatsApp</label><input id="workerPhone" type="tel" inputmode="tel" placeholder="+34 600 000 000"></div>
-       <div><label>Restaurante</label><select id="workerRestaurant"><option value="">Selecciona restaurante</option><option>Farini Fustera</option><option>Mandala Port</option><option>Rull</option><option>Mandala Fustera</option><option>Farini Benissa</option></select></div>
+       <div><label>Restaurante</label><select id="workerRestaurant"><option value="">Selecciona restaurante</option><option>Farini Fustera</option><option>Mandala Port</option><option>Rull</option><option>Mandala Fustera</option><option>Farini Benissa</option><option>Todos los restaurantes</option></select></div>
        <div><label>Puesto</label><input id="workerPosition"></div>
        <div><label>Estado</label><select id="workerActive"><option value="true">Activo</option><option value="false">Baja</option></select></div>
       </div>
       <div class="actions"><button class="primary" onclick="saveWorker()">GUARDAR TRABAJADOR</button><button class="secondary" onclick="clearWorkerForm()">NUEVO / LIMPIAR</button></div>
       <p class="small">Los trabajadores activos se comparan automáticamente con las firmas de la versión vigente.</p>
     </div>
-    <div class="filters"><input id="workerSearch" placeholder="Buscar trabajador, DNI, restaurante o puesto" oninput="renderWorkers()"></div>
+    <div class="filters" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+      <input id="workerSearch" placeholder="Buscar nombre, DNI o puesto" oninput="renderWorkers()" style="flex:2;min-width:180px">
+      <select id="workerFilterRestaurant" onchange="renderWorkers()" aria-label="Filtrar por restaurante"><option value="">Todos los restaurantes</option><option>Farini Fustera</option><option>Farini Benissa</option><option>Mandala Fustera</option><option>Mandala Port</option><option>Rull</option></select>
+      <select id="workerFilterDepartment" onchange="renderWorkers()" aria-label="Filtrar por departamento"><option value="">Todos los departamentos</option><option>Sala</option><option>Cocina</option><option>Dirección</option></select>
+      <select id="workerFilterStatus" onchange="renderWorkers()" aria-label="Filtrar por estado"><option value="active">Activos</option><option value="inactive">Bajas</option><option value="all">Todos los estados</option></select>
+      <input id="workerFilterPosition" placeholder="Filtrar por puesto específico" oninput="renderWorkers()" style="min-width:160px">
+    </div>
     <div id="workersList" class="records"></div>
    </section>
 
@@ -254,7 +263,8 @@ button.primary,.primary,.management-link{background:linear-gradient(135deg,#c994
     <input id="fVersion" placeholder="Versión (ej. 1.1)" oninput="renderRecords()">
     <input id="fDate" type="date" onchange="renderRecords()"><select id="fStatus" onchange="renderRecords()"><option value="">Todos</option><option value="current">Versión actual firmada</option><option value="older">Pendiente de versión actual</option></select>
    </div>
-   <div class="actions"><button class="primary" onclick="loadRecords()">ACTUALIZAR DESDE DATABASE</button><button class="secondary" onclick="clearFilters()">LIMPIAR FILTROS</button></div>
+   <div class="actions"><button class="primary" id="recordsRefreshButton" type="button" onclick="loadRecords()">ACTUALIZAR DESDE DATABASE</button><button class="secondary" type="button" onclick="clearFilters()">LIMPIAR FILTROS</button></div>
+    <p id="recordsRefreshStatus" class="small" role="status" aria-live="polite" style="padding:10px 4px;margin:8px 0 12px;font-weight:600;min-height:28px">Pulsa actualizar para comprobar la conexión con Supabase.</p>
    <div id="records" class="records"></div>
    </section>
 
@@ -328,8 +338,8 @@ const SUPABASE_KEY='sb_publishable_TyFTWuFnxvlz3sDRF7f6lw_dZcFTnYe';
 const SUPABASE_TABLE='normas_firmadas';
 let managementRecords=[];
 const MANAGEMENT_USERS={
- 'Felipe Ezquerdo':{role:'Gerencia'},
- 'Vicent Gimenez':{role:'Gerencia'},
+ 'Felipe Izquierdo':{role:'Gerencia'},
+ 'Vicent Giménez':{role:'Gerencia'},
  'Gustavo Vinazza':{role:'Supervisión'},
  'Pedro Jorro':{role:'Supervisión'}
 };
@@ -337,14 +347,53 @@ let loggedManagementUser=null;
 function passwordKey(u){return 'mandala_normas_pin_'+u.toLowerCase().replace(/[^a-z0-9]+/g,'_')}
 function getUserPassword(u){return localStorage.getItem(passwordKey(u))||'2026'}
 
+let activeInvitationToken=null;
+async function loadInvitation(){
+ const params=new URLSearchParams(location.search);
+ const token=params.get('normas_invite');
+ if(!token)return;
+ // El token no queda visible en la barra del navegador ni en el historial.
+ history.replaceState(null,'',location.pathname+location.hash);
+ try{
+  const d=await normasApi('get_invitation',{token},false);
+  if(d.version!==VERSION)throw Error('Versión de normas distinta');
+  activeInvitationToken=token;
+  const name=document.getElementById('name');
+  const restaurant=document.getElementById('restaurant');
+  const position=document.getElementById('position');
+  name.value=d.nombre||'';name.readOnly=true;
+  if(d.restaurante && ![...restaurant.options].some(x=>x.value===d.restaurante)){
+   const opt=document.createElement('option');opt.value=d.restaurante;opt.textContent=d.restaurante;restaurant.appendChild(opt);
+  }
+  restaurant.value=d.restaurante||'';restaurant.disabled=true;
+  position.value=d.puesto||'';position.readOnly=true;
+  // La API no divulga el DNI/NIE ni el teléfono en una consulta pública.
+  // Los facilita directamente la persona que recibe su invitación.
+  const dni=document.getElementById('dni'),phone=document.getElementById('whatsapp');
+  dni.placeholder='Escribe tu DNI / NIE';
+  phone.placeholder='Escribe tu teléfono de contacto';
+  const note=document.getElementById('invitationNotice');if(note)note.style.display='block';
+  document.getElementById('signBox').scrollIntoView({behavior:'smooth'});
+ }catch(e){activeInvitationToken=null;alert('No se puede abrir el enlace de firma: '+e.message);}
+}
+window.addEventListener('DOMContentLoaded',loadInvitation);
 const canvas=document.getElementById('signature'),ctx=canvas.getContext('2d');let drawing=false,hasSignature=false,signedRecord=null;
-function resizeCanvas(){const r=canvas.getBoundingClientRect();const old=hasSignature?canvas.toDataURL():null;canvas.width=Math.round(r.width*devicePixelRatio);canvas.height=Math.round(r.height*devicePixelRatio);ctx.scale(devicePixelRatio,devicePixelRatio);ctx.lineWidth=2.2;ctx.lineCap='round';ctx.strokeStyle='#17251e';if(old){let i=new Image();i.onload=()=>ctx.drawImage(i,0,0,r.width,r.height);i.src=old}}
+function resizeCanvas(){const r=canvas.getBoundingClientRect();const old=hasSignature?canvas.toDataURL():null;canvas.width=Math.round(r.width*devicePixelRatio);canvas.height=Math.round(r.height*devicePixelRatio);ctx.scale(devicePixelRatio,devicePixelRatio);ctx.lineWidth=3.6;ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle='#ffdd8a';if(old){let i=new Image();i.onload=()=>ctx.drawImage(i,0,0,r.width,r.height);i.src=old}}
 resizeCanvas();addEventListener('resize',resizeCanvas);
 function pt(e){const r=canvas.getBoundingClientRect(),t=e.touches?e.touches[0]:e;return [t.clientX-r.left,t.clientY-r.top]}
 function start(e){e.preventDefault();drawing=true;hasSignature=true;let [x,y]=pt(e);ctx.beginPath();ctx.moveTo(x,y)}
 function move(e){if(!drawing)return;e.preventDefault();let[x,y]=pt(e);ctx.lineTo(x,y);ctx.stroke()}
 function end(){drawing=false};['mousedown','touchstart'].forEach(x=>canvas.addEventListener(x,start,{passive:false}));['mousemove','touchmove'].forEach(x=>canvas.addEventListener(x,move,{passive:false}));['mouseup','mouseleave','touchend','touchcancel'].forEach(x=>canvas.addEventListener(x,end));
 function clearSig(){ctx.clearRect(0,0,canvas.width,canvas.height);hasSignature=false}
+// Convertir la firma visible (dorado claro) a tinta negra sobre fondo blanco antes de archivarla.
+function firmaNegraSobreBlanco(){
+ const copia=document.createElement('canvas');copia.width=canvas.width;copia.height=canvas.height;
+ const tinta=copia.getContext('2d');
+ tinta.drawImage(canvas,0,0);
+ tinta.globalCompositeOperation='source-in';tinta.fillStyle='#161616';tinta.fillRect(0,0,copia.width,copia.height);
+ tinta.globalCompositeOperation='destination-over';tinta.fillStyle='#ffffff';tinta.fillRect(0,0,copia.width,copia.height);
+ return copia.toDataURL('image/png');
+}
 function localSignedRecords(){try{return JSON.parse(localStorage.getItem('mandala_normas_firmas_local')||'[]')}catch(e){return []}}
 function cacheSignedRecord(record){
  const rows=localSignedRecords();
@@ -359,13 +408,14 @@ function mergeSignedRecords(remoteRows){
  return all.filter(x=>{const k='sig:'+String(x.dni_nie||'').trim().toLowerCase()+'|'+String(x.version||'')+'|'+String(x.firmado_en||'');if(seen.has(k))return false;seen.add(k);return true}).sort((a,b)=>String(b.firmado_en||'').localeCompare(String(a.firmado_en||'')));
 }
 async function confirmSign(){
+ if(!activeInvitationToken)return alert('Para firmar necesitas el enlace individual recibido por WhatsApp.');
  const name=document.getElementById('name').value.trim(),dni=document.getElementById('dni').value.trim(),whatsapp=document.getElementById('whatsapp').value.trim(),restaurant=document.getElementById('restaurant').value,position=document.getElementById('position').value.trim();
  if(!name||!dni||!whatsapp||!restaurant||!position)return alert('Completa nombre, DNI/NIE, teléfono/WhatsApp, restaurante y puesto.');
  if(!document.getElementById('accept').checked)return alert('Debes marcar la declaración de lectura y aceptación.');
  if(!hasSignature)return alert('Falta la firma.');
  if(!confirm('¿Confirmar la firma y archivarla en Gerencia?'))return;
  const now=new Date();
- signedRecord={nombre:name,dni_nie:dni,restaurante:restaurant,puesto:position,version:VERSION,whatsapp:whatsapp,firmado_en:now.toISOString(),firma_png:canvas.toDataURL('image/png'),aceptado:true};
+ signedRecord={nombre:name,dni_nie:dni,restaurante:restaurant,puesto:position,version:VERSION,whatsapp:whatsapp,firmado_en:now.toISOString(),firma_png:firmaNegraSobreBlanco(),aceptado:true};
  signedRecord.documento_html=buildFullEvidenceHTML(signedRecord);
  const ok=await saveSignedRecordToDatabase(signedRecord);
  if(!ok)return;
@@ -396,14 +446,17 @@ function buildFullEvidenceHTML(record){
  </body></html>`;
 }
 async function saveSignedRecordToDatabase(record){
- if(SUPABASE_URL.startsWith('PON_')||SUPABASE_KEY.startsWith('PON_')){alert('Falta conectar esta aplicación con Supabase. La firma NO se ha cerrado.');return false}
+ if(!activeInvitationToken){alert('La firma requiere un enlace individual de WhatsApp válido.');return false;}
  try{
-  const qs='?dni_nie=eq.'+encodeURIComponent(record.dni_nie)+'&version=eq.'+encodeURIComponent(record.version)+'&select=id';
-  const check=await fetch(SUPABASE_URL+'/rest/v1/'+SUPABASE_TABLE+qs,{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}});
-  if(check.ok){const existing=await check.json();if(existing.length){alert('Este trabajador ya tiene archivada la versión '+record.version+'.');return false}}
-  const r=await fetch(SUPABASE_URL+'/rest/v1/'+SUPABASE_TABLE,{method:'POST',headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(record)});
-  if(!r.ok)throw new Error(await r.text());return true;
- }catch(e){alert('No se pudo archivar la firma en Database: '+e.message+'\nLa firma queda abierta para poder intentarlo de nuevo.');return false}
+  const result=await normasApi('sign_invitation',{
+    token:activeInvitationToken,aceptado:true,firma_png:record.firma_png,
+    documento_html:record.documento_html
+  },false);
+  if(!result.ok || !result.firmado_en)throw Error('El servidor no confirmó el archivo de la firma');
+  record.firmado_en=result.firmado_en;
+  activeInvitationToken=null;
+  return true;
+ }catch(e){alert('No se pudo archivar la firma: '+e.message);return false;}
 }
 async function saveDatabase(){
  if(!signedRecord)return alert('Primero confirma la firma.');
@@ -414,13 +467,7 @@ function downloadDocument(){
  const doc='<!doctype html><html><head><meta charset="utf-8"><title>Normas Mandala</title></head><body style="font-family:Arial;max-width:850px;margin:auto;padding:30px"><h1>GRUPO MANDALA</h1><h2>Normas Generales · Versión '+VERSION+'</h2><p><b>'+signedRecord.nombre+'</b><br>DNI/NIE: '+signedRecord.dni_nie+'<br>WhatsApp: '+signedRecord.whatsapp+'<br>'+signedRecord.restaurante+' · '+signedRecord.puesto+'<br>Firmado: '+new Date(signedRecord.firmado_en).toLocaleString('es-ES')+'</p><p>Documento firmado electrónicamente tras la lectura y aceptación de las Normas Generales de Convivencia y Funcionamiento.</p><h3>Firma</h3><img style="max-width:600px;border:1px solid #ccc" src="'+signedRecord.firma_png+'"></body></html>';
  const blob=new Blob([doc],{type:'text/html;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Normas_Mandala_'+signedRecord.nombre.replace(/\\s+/g,'_')+'_V'+VERSION+'.html';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
-function sendWhatsApp(i){
- const x=window._filteredRecords[i];if(!x||!x.whatsapp)return alert('Este empleado no tiene teléfono/WhatsApp guardado.');
- let phone=String(x.whatsapp).replace(/\D/g,'');if(phone.length===9)phone='34'+phone;
- const link=location.origin+location.pathname;
- const msg='Hola '+x.nombre+'. Hay una nueva versión de las Normas Generales de Grupo Mandala (versión '+VERSION+'). Puedes revisarla y firmarla aquí: '+link;
- window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msg),'_blank');
-}
+function sendWhatsApp(i){alert('Utiliza la ficha del trabajador para enviar un enlace individual.');}
 function openManagement(){
  try{const last=JSON.parse(localStorage.getItem('mandala_normas_ultimo')||'null');if(last)cacheSignedRecord(last)}catch(e){}
  document.getElementById('managementModal').style.display='block';
@@ -432,39 +479,66 @@ function closeManagement(){document.getElementById('managementModal').style.disp
 let currentMgrSection='workers';
 function updateMgrBackButton(){const b=document.getElementById('mgrBackBtn');if(!b)return;b.textContent=(document.getElementById('historyPanel').style.display!=='none'&&currentMgrSection!=='workers')?'ATRÁS':'CERRAR'}
 function managementBack(){if(document.getElementById('historyPanel').style.display!=='none'&&currentMgrSection!=='workers'){showMgrSection('workers');window.scrollTo({top:0,behavior:'smooth'});return}closeManagement()}
-function managementLogin(){
+
+/* V2.5: acceso y trabajadores mediante Edge Function. No publicar hasta pruebas. */
+let normasSessionToken=null;
+async function normasApi(action,payload={},auth=true){
+ const headers={'Content-Type':'application/json','apikey':SUPABASE_KEY};
+ if(auth){if(!normasSessionToken)throw Error('Sesión no iniciada');headers.Authorization='Bearer '+normasSessionToken;}
+ const r=await fetch(SUPABASE_URL+'/functions/v1/mandala-normas',{method:'POST',headers,body:JSON.stringify({action,...payload})});
+ const data=await r.json().catch(()=>({}));if(!r.ok)throw Error(data.error||('Error '+r.status));return data;
+}
+
+async function managementLogin(){
  const u=document.getElementById('mgrUser').value,c=document.getElementById('mgrCode').value;
- if(c!==getUserPassword(u))return alert('Contraseña incorrecta.');
- loggedManagementUser=u;
- document.getElementById('loggedUser').textContent=u;
- document.getElementById('loggedRole').textContent=MANAGEMENT_USERS[u].role;
- document.getElementById('loginPanel').style.display='none';
- document.getElementById('historyPanel').style.display='block';
- document.getElementById('mgrCode').value='';
- refreshManagementData();
- showMgrSection('workers');
+ try{const r=await normasApi('login',{nombre:u,pin:c},false);normasSessionToken=r.token;loggedManagementUser=u;
+ document.getElementById('loggedUser').textContent=u;document.getElementById('loggedRole').textContent=MANAGEMENT_USERS[u]?.role||'Administración';
+ document.getElementById('loginPanel').style.display='none';document.getElementById('historyPanel').style.display='block';
+ document.getElementById('mgrCode').value='';await refreshManagementData();showMgrSection('workers');
+ }catch(e){alert('No se pudo iniciar sesión: '+e.message)}
 }
-function managementLogout(){
- loggedManagementUser=null;document.getElementById('historyPanel').style.display='none';document.getElementById('loginPanel').style.display='block';document.getElementById('mgrCode').value='';
+async function managementLogout(){
+ try{if(normasSessionToken)await normasApi('logout')}catch(e){}
+ normasSessionToken=null;loggedManagementUser=null;document.getElementById('historyPanel').style.display='none';
+ document.getElementById('loginPanel').style.display='block';document.getElementById('mgrCode').value='';
 }
-function changeOwnPassword(){
- if(!loggedManagementUser)return;
- const current=prompt('Introduce tu clave actual:');if(current===null)return;
- if(current!==getUserPassword(loggedManagementUser))return alert('La clave actual no es correcta.');
- const next=prompt('Introduce la nueva clave:');if(!next||next.trim().length<4)return alert('La nueva clave debe tener al menos 4 caracteres.');
- const confirmPin=prompt('Repite la nueva clave:');if(confirmPin!==next)return alert('Las claves no coinciden.');
- localStorage.setItem(passwordKey(loggedManagementUser),next.trim());alert('Clave actualizada correctamente.');
+async function changeOwnPassword(){
+ if(!normasSessionToken)return;const old_pin=prompt('Clave actual:');if(old_pin===null)return;
+ const new_pin=prompt('Nueva clave (8 caracteres mínimo, letras y números):');if(new_pin===null)return;
+ if(new_pin!==prompt('Repite la nueva clave:'))return alert('Las claves no coinciden');
+ try{await normasApi('change_pin',{old_pin,new_pin});alert('Clave actualizada. Vuelve a entrar.');await managementLogout()}catch(e){alert(e.message)}
 }
+let signedHistoryLoaded=false;
+let refreshingSignedHistory=false;
 async function loadRecords(){
- if(SUPABASE_URL.startsWith('PON_')||SUPABASE_KEY.startsWith('PON_')) return alert('Falta conectar esta aplicación con Database/Supabase.');
+ if(refreshingSignedHistory)return false;
+ refreshingSignedHistory=true;
+ const button=document.getElementById('recordsRefreshButton');
+ const status=document.getElementById('recordsRefreshStatus');
+ if(button){button.disabled=true;button.textContent='CONSULTANDO DATABASE...';}
+ if(status){status.textContent='Consultando Supabase, espera un momento...';status.style.color='';}
+ let success=false;
  try{
-  const r=await fetch(SUPABASE_URL+'/rest/v1/'+SUPABASE_TABLE+'?select=*&order=firmado_en.desc',{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}});
-  if(!r.ok) throw new Error(await r.text());
-  managementRecords=mergeSignedRecords(await r.json()); renderRecords(); updateWorkerSummary();
+  const response=await normasApi('list_signed');
+  if(!Array.isArray(response.data))throw Error('Respuesta inesperada del servidor');
+  managementRecords=response.data;
+  signedHistoryLoaded=true;
+  success=true;
+  if(status){
+   const n=managementRecords.length;
+   status.textContent='Actualizado desde Supabase: '+n+' documento'+(n===1?'':'s')+' · '+new Date().toLocaleTimeString('es-ES');
+   status.style.color='#24623b';
+  }
  }catch(e){
-  managementRecords=mergeSignedRecords([]); renderRecords(); updateWorkerSummary();
-  if(!managementRecords.length) alert('No se pudo cargar el histórico desde Database: '+e.message);
+  // No eliminar del panel una copia firmada que ya se había cargado.
+  if(status){status.textContent='No se ha podido actualizar desde Supabase: '+e.message;status.style.color='#9f2e22';}
+  if(!signedHistoryLoaded)managementRecords=[];
+ }finally{
+  refreshingSignedHistory=false;
+  if(button){button.disabled=false;button.textContent='ACTUALIZAR DESDE DATABASE';}
+  renderRecords();renderWorkers();renderPendingWorkers();updateWorkerSummary();
  }
+ return success;
 }
 function clearFilters(){['fName','fDni','fPosition','fVersion','fDate'].forEach(id=>document.getElementById(id).value='');document.getElementById('fRestaurant').value='';document.getElementById('fStatus').value='';renderRecords()}
 function renderRecords(){
@@ -482,44 +556,53 @@ function evidenceHTML(x){
  if(x.documento_html)return x.documento_html;
  return buildFullEvidenceHTML(x);
 }
-function viewRecord(i){
- const x=window._filteredRecords[i];if(!x)return;
- const w=window.open('','_blank');if(!w)return alert('El navegador ha bloqueado la ventana. Permite ventanas emergentes para ver la evidencia.');
- w.document.open();w.document.write(evidenceHTML(x));w.document.close();
+async function fullSignedRecord(i){
+ const x=window._filteredRecords?.[i];
+ if(!x)throw Error('Documento no encontrado');
+ if(x.documento_html && x.firma_png)return x;
+ const response=await normasApi('get_signed',{id:Number(x.id)});
+ if(!response.data)throw Error('El documento no está disponible');
+ Object.assign(x,response.data);
+ return x;
 }
-function printRecord(i){
- const x=window._filteredRecords[i];if(!x)return;
- const w=window.open('','_blank');if(!w)return alert('El navegador ha bloqueado la impresión. Permite ventanas emergentes.');
- w.document.open();w.document.write(evidenceHTML(x));w.document.close();
- const go=()=>{w.focus();w.print()}; if(w.document.readyState==='complete')setTimeout(go,350);else w.onload=()=>setTimeout(go,350);
+function safeEvidenceHTML(x){
+ const doc=evidenceHTML(x);
+ // Los documentos proceden de la base de datos: impedir que ejecuten JS al visualizarlos.
+ const csp=`<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data: blob:; style-src 'unsafe-inline'">`;
+ return /<head[^>]*>/i.test(doc)?doc.replace(/<head[^>]*>/i,m=>m+csp):'<!doctype html><html><head>'+csp+'</head><body>'+doc+'</body></html>';
 }
-function downloadRecord(i){
- const x=window._filteredRecords[i];if(!x)return;
- const blob=new Blob([evidenceHTML(x)],{type:'text/html;charset=utf-8'}),a=document.createElement('a');
- a.href=URL.createObjectURL(blob);a.download='Normas_Mandala_'+(x.nombre||'empleado').replace(/\s+/g,'_')+'_V'+x.version+'_FIRMADO.html';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
-}
-function saveEvidence(i){downloadRecord(i)}
-async function deleteRecord(i){
- const x=window._filteredRecords[i];if(!x)return;
- if(!confirm('¿Eliminar definitivamente esta evidencia de Database? Esta acción no se puede deshacer.'))return;
+async function viewRecord(i){
+ const w=window.open('','_blank');
+ if(!w)return alert('El navegador ha bloqueado la ventana. Permite ventanas emergentes para consultar el documento.');
+ w.document.write('<p style="font-family:Arial">Cargando documento firmado...</p>');
  try{
-  const params=new URLSearchParams();
-  if(x.id!==undefined&&x.id!==null&&x.id!=='') params.set('id','eq.'+x.id);
-  else {
-   params.set('dni_nie','eq.'+x.dni_nie);
-   params.set('version','eq.'+x.version);
-   params.set('firmado_en','eq.'+x.firmado_en);
-  }
-  const r=await fetch(SUPABASE_URL+'/rest/v1/'+SUPABASE_TABLE+'?'+params.toString(),{method:'DELETE',headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Accept':'application/json','Prefer':'return=representation'}});
-  if(!r.ok)throw new Error(await r.text());
-  const deleted=await r.json();
-  if(!Array.isArray(deleted)||deleted.length===0)throw new Error('Database no ha eliminado ningún registro. Revisa la política DELETE de Supabase.');
-  managementRecords=managementRecords.filter(r=>!deleted.some(d=>(d.id!=null&&r.id==d.id)||((r.dni_nie||'')===(d.dni_nie||'')&&(r.version||'')===(d.version||'')&&(r.firmado_en||'')===(d.firmado_en||''))));
-  renderRecords();
-  await loadRecords();
-  alert('Evidencia eliminada correctamente de Database.');
- }catch(e){alert('No se pudo eliminar: '+e.message)}
+  const x=await fullSignedRecord(i);
+  w.document.open();w.document.write(safeEvidenceHTML(x));w.document.close();
+ }catch(e){w.close();alert('No se pudo abrir el documento: '+e.message)}
 }
+async function printRecord(i){
+ const w=window.open('','_blank');
+ if(!w)return alert('El navegador ha bloqueado la impresión. Permite ventanas emergentes.');
+ w.document.write('<p style="font-family:Arial">Preparando impresión...</p>');
+ try{
+  const x=await fullSignedRecord(i);
+  w.document.open();w.document.write(safeEvidenceHTML(x));w.document.close();
+  // Esperar a que la imagen de la firma termine de cargarse.
+  w.addEventListener('load',()=>{w.focus();w.print()},{once:true});
+  setTimeout(()=>{if(!w.closed){w.focus();w.print()}},1200);
+ }catch(e){w.close();alert('No se pudo imprimir el documento: '+e.message)}
+}
+async function downloadRecord(i){
+ try{
+  const x=await fullSignedRecord(i);
+  const blob=new Blob([safeEvidenceHTML(x)],{type:'text/html;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='Normas_Mandala_'+(x.nombre||'empleado').replace(/[^a-z0-9_-]+/gi,'_')+'_V'+x.version+'_FIRMADO.html';
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+ }catch(e){alert('No se pudo descargar el documento: '+e.message)}
+}
+function saveEvidence(i){return downloadRecord(i)}
+async function deleteRecord(i){alert('La eliminación de firmas está deshabilitada hasta disponer de una operación segura en el servidor.')}
 
 /* === CONTROL DOCUMENTAL DE TRABAJADORES === */
 const WORKERS_TABLE='trabajadores_normas';
@@ -541,10 +624,8 @@ function localWorkers(){try{return JSON.parse(localStorage.getItem('mandala_norm
 function saveLocalWorkers(rows){localStorage.setItem('mandala_normas_workers',JSON.stringify(rows||[]))}
 function workerKey(x){return String(x.dni_nie||'').trim().toLowerCase()}
 function syncSignedPeopleIntoWorkers(){
- const byKey=new Map(workersRecords.map(x=>[workerKey(x),x]));
- let changed=false;
- managementRecords.forEach(r=>{const k=workerKey(r);if(!k||byKey.has(k))return;const w={id:'signed_'+k.replace(/[^a-z0-9]/g,'_'),nombre:r.nombre||'',dni_nie:r.dni_nie||'',whatsapp:r.whatsapp||'',restaurante:r.restaurante||'',puesto:r.puesto||'',activo:true,origen:'firma',creado_en:r.firmado_en||new Date().toISOString()};workersRecords.push(w);byKey.set(k,w);changed=true});
- if(changed)saveLocalWorkers(workersRecords);
+ // Las firmas son registros históricos, no altas de trabajadores.
+ // Nunca recrear un trabajador a partir de una firma antigua.
 }
 function signedCurrentSet(){
  const set=new Set();
@@ -552,15 +633,9 @@ function signedCurrentSet(){
  return set;
 }
 async function loadWorkers(){
- try{
-  const r=await fetch(SUPABASE_URL+'/rest/v1/'+WORKERS_TABLE+'?select=*&order=nombre.asc',{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}});
-  if(!r.ok)throw new Error(await r.text());
-  workersRecords=await r.json(); workersRemoteAvailable=true; saveLocalWorkers(workersRecords);
- }catch(e){
-  workersRemoteAvailable=false; workersRecords=localWorkers();
- }
- syncSignedPeopleIntoWorkers();
- renderWorkers(); renderPendingWorkers(); updateWorkerSummary();
+ try{const r=await normasApi('list');workersRecords=r.data||[];workersRemoteAvailable=true;saveLocalWorkers(workersRecords)}
+ catch(e){workersRemoteAvailable=false;workersRecords=[];alert('No se pudieron cargar trabajadores: '+e.message)}
+ renderWorkers();renderPendingWorkers();updateWorkerSummary();
 }
 async function refreshManagementData(){await Promise.all([loadRecords(),loadWorkers()]);syncSignedPeopleIntoWorkers();renderWorkers();renderPendingWorkers();updateWorkerSummary()}
 function clearWorkerForm(){
@@ -569,31 +644,13 @@ function clearWorkerForm(){
 }
 async function saveWorker(){
  const id=document.getElementById('workerId').value;
- const row={
-   nombre:document.getElementById('workerName').value.trim(),
-   dni_nie:document.getElementById('workerDni').value.trim(),
-   whatsapp:document.getElementById('workerPhone').value.trim(),
-   restaurante:document.getElementById('workerRestaurant').value,
-   puesto:document.getElementById('workerPosition').value.trim(),
-   activo:document.getElementById('workerActive').value==='true',
-   actualizado_en:new Date().toISOString()
- };
- if(!row.nombre||!row.dni_nie||!row.restaurante||!row.puesto)return alert('Completa nombre, DNI/NIE, restaurante y puesto.');
- const duplicate=workersRecords.find(x=>workerKey(x)===workerKey(row)&&String(x.id||'')!==String(id||''));
- if(duplicate)return alert('Ya existe un trabajador con ese DNI/NIE.');
- if(workersRemoteAvailable){
-   try{
-    let url=SUPABASE_URL+'/rest/v1/'+WORKERS_TABLE,method='POST';
-    if(id){url+='?id=eq.'+encodeURIComponent(id);method='PATCH'}
-    const r=await fetch(url,{method,headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(row)});
-    if(!r.ok)throw new Error(await r.text());
-    await loadWorkers();clearWorkerForm();return alert('Trabajador guardado en Database.');
-   }catch(e){workersRemoteAvailable=false}
- }
- const rows=localWorkers(); const idx=id?rows.findIndex(x=>String(x.id)===String(id)):rows.findIndex(x=>workerKey(x)===workerKey(row));
- if(idx>=0)rows[idx]={...rows[idx],...row};else rows.push({...row,id:'local_'+Date.now(),creado_en:new Date().toISOString()});
- saveLocalWorkers(rows);workersRecords=rows;renderWorkers();renderPendingWorkers();updateWorkerSummary();clearWorkerForm();
- alert('Trabajador guardado en este dispositivo. Para compartir la base entre dispositivos, ejecuta el archivo SQL de Supabase incluido con esta versión.');
+ const worker={nombre:document.getElementById('workerName').value.trim(),dni_nie:document.getElementById('workerDni').value.trim(),whatsapp:document.getElementById('workerPhone').value.trim(),restaurante:document.getElementById('workerRestaurant').value,puesto:document.getElementById('workerPosition').value.trim()};
+ if(!worker.nombre||!worker.dni_nie||!worker.restaurante||!worker.puesto)return alert('Completa los datos obligatorios');
+ if(workersRecords.some(x=>workerKey(x)===workerKey(worker)&&String(x.id)!==String(id)))return alert('Ya existe ese DNI/NIE');
+ try{await normasApi(id?'update':'create',id?{id:Number(id),worker}:{worker});
+ const desired=document.getElementById('workerActive').value==='true';
+ if(id){const original=workersRecords.find(x=>String(x.id)===String(id));if(original&&original.activo!==desired)await normasApi(desired?'reactivate':'deactivate',{id:Number(id)})}
+ await loadWorkers();clearWorkerForm();alert('Trabajador guardado en Supabase')}catch(e){alert('No se pudo guardar: '+e.message)}
 }
 function editWorker(id){
  const x=workersRecords.find(w=>String(w.id)===String(id));if(!x)return;
@@ -608,56 +665,91 @@ function editWorker(id){
 }
 async function toggleWorker(id){
  const x=workersRecords.find(w=>String(w.id)===String(id));if(!x)return;
- const next=!(x.activo!==false);
- if(workersRemoteAvailable && !String(id).startsWith('local_')){
-  try{
-   const r=await fetch(SUPABASE_URL+'/rest/v1/'+WORKERS_TABLE+'?id=eq.'+encodeURIComponent(id),{method:'PATCH',headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({activo:next,actualizado_en:new Date().toISOString()})});
-   if(!r.ok)throw new Error(await r.text()); await loadWorkers();return;
-  }catch(e){workersRemoteAvailable=false}
- }
- x.activo=next;saveLocalWorkers(workersRecords);renderWorkers();renderPendingWorkers();updateWorkerSummary();
+ const next=!x.activo;if(!confirm(next?'¿Reactivar a '+x.nombre+'?':'¿Dar de baja a '+x.nombre+'? Se conservarán las firmas.'))return;
+ try{await normasApi(next?'reactivate':'deactivate',{id:Number(id)});await loadWorkers();alert(next?'Reactivado':'Baja registrada')}catch(e){alert(e.message)}
+}
+function workerDepartment(x){
+ const p=String(x.puesto||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+ if(/director|direccion|segundo de direccion|segunda directora/.test(p))return 'Dirección';
+ if(/cocin|pizz|chef|freganch|lavaplat|office|pasteler|repost|partida/.test(p))return 'Cocina';
+ return 'Sala';
+}
+function workerRestaurants(x){
+ const value=String(x.restaurante||'');
+ if(/todos los restaurantes|todos los locales|grupo mandala/i.test(value))return ['Farini Fustera','Farini Benissa','Mandala Fustera','Mandala Port','Rull'];
+ return value.split(/\s*[,;|]\s*/).map(v=>v.trim()).filter(Boolean);
 }
 function renderWorkers(){
- const q=(document.getElementById('workerSearch')?.value||'').toLowerCase(), signed=signedCurrentSet();
- const rows=workersRecords.filter(x=>[x.nombre,x.dni_nie,x.restaurante,x.puesto].join(' ').toLowerCase().includes(q));
+ const q=(document.getElementById('workerSearch')?.value||'').trim().toLocaleLowerCase('es');
+ const restaurant=document.getElementById('workerFilterRestaurant')?.value||'';
+ const department=document.getElementById('workerFilterDepartment')?.value||'';
+ const status=document.getElementById('workerFilterStatus')?.value||'active';
+ const position=(document.getElementById('workerFilterPosition')?.value||'').trim().toLocaleLowerCase('es');
+ const signed=signedCurrentSet();
+ const rows=workersRecords.filter(x=>{
+   if(status==='active'&&x.activo===false)return false;
+   if(status==='inactive'&&x.activo!==false)return false;
+   if(restaurant&&!workerRestaurants(x).includes(restaurant))return false;
+   if(department&&workerDepartment(x)!==department)return false;
+   if(position&&!String(x.puesto||'').toLocaleLowerCase('es').includes(position))return false;
+   return [x.nombre,x.dni_nie,x.restaurante,x.puesto].join(' ').toLocaleLowerCase('es').includes(q);
+ }).sort((a,b)=>String(a.nombre||'').localeCompare(String(b.nombre||''),'es',{sensitivity:'base'}));
  const box=document.getElementById('workersList');if(!box)return;
- if(!rows.length){box.innerHTML='<div class="record">Todavía no hay trabajadores en la base de datos.</div>';updateWorkerSummary();return}
- box.innerHTML=rows.map(x=>`<div class="record worker-card ${x.activo===false?'inactive':''}"><b>${esc(x.nombre)}</b> · ${esc(x.dni_nie)}<br>${esc(x.restaurante)} · ${esc(x.puesto)}<br>WhatsApp: ${esc(x.whatsapp||'—')}<br><span class="worker-status ${x.activo===false?'off':''}">${x.activo===false?'BAJA':'ACTIVO'}</span> · <span class="${signed.has(workerKey(x))?'sig-ok':'sig-pending'}">${signed.has(workerKey(x))?'V'+VERSION+' FIRMADA':'V'+VERSION+' PENDIENTE'}</span><div class="record-actions"><button class="secondary" onclick="editWorker('${x.id}')">EDITAR</button><button class="secondary" onclick="toggleWorker('${x.id}')">${x.activo===false?'REACTIVAR':'DAR DE BAJA'}</button>${x.activo!==false&&!signed.has(workerKey(x))&&x.whatsapp?`<button class="primary" onclick="sendWorkerWhatsApp('${x.id}')">WHATSAPP</button>`:''}</div></div>`).join('');
+ if(!rows.length){box.innerHTML='<div class="record">No hay trabajadores que coincidan con estos filtros.</div>';updateWorkerSummary();return}
+ box.innerHTML=rows.map(x=>`<div class="record worker-card ${x.activo===false?'inactive':''}"><b>${esc(x.nombre)}</b> · ${esc(x.dni_nie)}<br>${esc(x.restaurante)} · ${esc(workerDepartment(x))} · ${esc(x.puesto)}<br>WhatsApp: ${esc(x.whatsapp||'—')}<br><span class="worker-status ${x.activo===false?'off':''}">${x.activo===false?'BAJA':'ACTIVO'}</span> · <span class="${signed.has(workerKey(x))?'sig-ok':'sig-pending'}">${signed.has(workerKey(x))?'V'+VERSION+' FIRMADA':'V'+VERSION+' PENDIENTE'}</span><div class="record-actions"><button class="secondary" onclick="editWorker('${x.id}')">EDITAR</button><button class="secondary" onclick="toggleWorker('${x.id}')">${x.activo===false?'REACTIVAR':'DAR DE BAJA'}</button>${x.activo!==false&&!signed.has(workerKey(x))&&x.whatsapp?`<button class="primary" onclick="sendWorkerWhatsApp('${x.id}')">WHATSAPP</button>`:''}</div></div>`).join('');
  updateWorkerSummary();
 }
 function pendingWorkers(){
  const signed=signedCurrentSet();return workersRecords.filter(x=>x.activo!==false&&!signed.has(workerKey(x)));
 }
 function renderPendingWorkers(){
- const rows=pendingWorkers(),box=document.getElementById('pendingList');if(!box)return;
+ const box=document.getElementById('pendingList');if(!box)return;
  document.getElementById('pendingVersion').textContent=VERSION;
- if(!rows.length){box.innerHTML='<div class="record"><b>Todo al día.</b><br>No hay trabajadores activos pendientes de firmar la versión '+esc(VERSION)+'.</div>';updateWorkerSummary();return}
- box.innerHTML=rows.map(x=>`<div class="record worker-card"><b>${esc(x.nombre)}</b> · ${esc(x.dni_nie)}<br>${esc(x.restaurante)} · ${esc(x.puesto)}<br>WhatsApp: ${esc(x.whatsapp||'—')}<br><span class="sig-pending">PENDIENTE DE V${esc(VERSION)}</span><div class="record-actions">${x.whatsapp?`<button class="primary" onclick="sendWorkerWhatsApp('${x.id}')">ENVIAR POR WHATSAPP</button>`:'<span class="small">Sin WhatsApp registrado</span>'}</div></div>`).join('');
- updateWorkerSummary();
+ if(!signedHistoryLoaded){
+  box.innerHTML='<div class="record">No se puede calcular quién falta por firmar hasta cargar correctamente el histórico seguro de Supabase.</div>';
+  return;
+ }
+ const rows=pendingWorkers().sort((a,b)=>String(a.nombre||'').localeCompare(String(b.nombre||''),'es'));
+ if(!rows.length){box.innerHTML='<div class="record">Todos los trabajadores activos han firmado la versión '+esc(VERSION)+'.</div>';return;}
+ const groups={};
+ for(const x of rows){
+  const key=x.restaurante||'Sin restaurante';
+  (groups[key]??=[]).push(x);
+ }
+ box.innerHTML=Object.keys(groups).sort().map(key=>
+  `<section class="restaurant-archive"><h3 class="restaurant-archive-title">${esc(key)} · ${groups[key].length} pendientes</h3><div class="restaurant-archive-body">`+
+  groups[key].map(x=>`<div class="record"><b>${esc(x.nombre)}</b> · ${esc(x.dni_nie)}<br>${esc(x.puesto)} · ${esc(x.whatsapp||'Sin teléfono')}<div class="record-actions">${x.whatsapp?`<button class="primary" onclick="sendWorkerWhatsApp('${x.id}')">ENVIAR POR WHATSAPP</button>`:'<span class="small">Añade su teléfono en Trabajadores para enviar el enlace.</span>'}</div></div>`).join('')+
+  '</div></section>'
+ ).join('');
 }
 function updateWorkerSummary(){
- syncSignedPeopleIntoWorkers();
- const signed=signedCurrentSet(),active=workersRecords.filter(x=>x.activo!==false),pending=active.filter(x=>!signed.has(workerKey(x)));
+ const active=workersRecords.filter(x=>x.activo!==false);
+ const signed=signedCurrentSet();
+ const pending=active.filter(x=>!signed.has(workerKey(x)));
  const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
- set('workersTotal',workersRecords.length);set('workersActive',active.length);set('workersSigned',active.filter(x=>signed.has(workerKey(x))).length);set('workersPending',pending.length);
+ set('workersTotal',workersRecords.length);
+ set('workersActive',active.length);
+ set('workersSigned',signedHistoryLoaded?active.length-pending.length:'—');
+ set('workersPending',signedHistoryLoaded?pending.length:'—');
 }
-function sendWorkerWhatsApp(id){
- const x=workersRecords.find(w=>String(w.id)===String(id));if(!x||!x.whatsapp)return alert('Este trabajador no tiene WhatsApp guardado.');
- let phone=String(x.whatsapp).replace(/\D/g,'');if(phone.length===9)phone='34'+phone;
- let link=(location.protocol==='http:'||location.protocol==='https:')?(location.origin+location.pathname):'https://gustavo13-lab.github.io/mandala-normas/';
- const msg='Hola '+x.nombre+'. Tienes pendiente la lectura y firma de las Normas Generales de Grupo Mandala, versión '+VERSION+'. Puedes revisarlas y firmarlas aquí: '+link;
- window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msg),'_blank');
+async function sendWorkerWhatsApp(id){
+ const worker=workersRecords.find(x=>String(x.id)===String(id));
+ if(!worker || !worker.whatsapp)return alert('El trabajador no tiene teléfono de WhatsApp.');
+ if(!/^https:\/\//.test(location.href))return alert('Los enlaces deben generarse desde la aplicación publicada en HTTPS.');
+ if(!signedHistoryLoaded)return alert('Primero hay que consultar el histórico de firmas para evitar duplicados.');
+ if(signedCurrentSet().has(workerKey(worker)))return alert('Este trabajador ya firmó esta versión.');
+ const digits=String(worker.whatsapp).replace(/\D/g,'');
+ const phone=digits.length===9?'34'+digits:digits;
+ if(phone.length<10 || phone.length>15)return alert('Revisa el número de WhatsApp del trabajador.');
+ try{
+  const result=await normasApi('create_invitation',{trabajador_id:Number(id)});
+  if(!result.ok || !result.token)throw Error('No se pudo generar el enlace');
+  const link=location.origin+location.pathname+'?normas_invite='+encodeURIComponent(result.token);
+  const msg='Hola '+worker.nombre+', te enviamos las Normas Generales de Grupo Mandala, versión '+VERSION+', para leer y firmar. Este enlace personal caduca en 7 días y se puede utilizar una sola vez: '+link;
+  const wa='https://wa.me/'+phone+'?text='+encodeURIComponent(msg);
+  // En Android el navegador puede bloquear window.open después de una operación asíncrona.
+  location.assign(wa);
+ }catch(e){alert('No se pudo preparar WhatsApp: '+e.message)}
 }
-/* Integración con el panel ya existente */
-const _oldManagementLogin=managementLogin;
-managementLogin=function(){
- _oldManagementLogin();
- if(loggedManagementUser){showMgrSection('workers');refreshManagementData()}
-};
-const _oldLoadRecords=loadRecords;
-loadRecords=async function(){
- await _oldLoadRecords();
- renderWorkers();renderPendingWorkers();updateWorkerSummary();
-};
 
 </script></body></html>
