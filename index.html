@@ -293,7 +293,7 @@ button.primary,.primary,.management-link{background:linear-gradient(135deg,#c994
     <div class="manual-step">
       <span class="step-no">3</span>
       <div><h4>ENVIAR LAS NORMAS POR WHATSAPP</h4>
-      <p>En el trabajador pendiente pulsa <b>Enviar por WhatsApp</b>. Se abrirá WhatsApp con un mensaje preparado que incluye el enlace a las Normas Generales y la versión que debe firmar. Selecciona o confirma el contacto y envía el mensaje.</p>
+      <p>En el trabajador pendiente pulsa <b>Enviar por WhatsApp</b>. Se abrirá WhatsApp con el enlace personal a las Normas Generales y la versión que debe firmar, sin necesidad de guardar su número. Si WhatsApp no abre correctamente ese teléfono, pulsa <b>Copiar mensaje</b>, entra en la conversación habitual con el trabajador, pega el mensaje y envíalo. El enlace de firma será individual igualmente.</p>
       <p class="manual-note">Para que el trabajador pueda abrir el enlace desde su móvil, la aplicación debe estar publicada en una dirección web accesible. Un archivo abierto como <b>content://downloads</b> solo existe en ese dispositivo y no puede compartirse como enlace de firma.</p></div>
     </div>
 
@@ -696,7 +696,7 @@ function renderWorkers(){
  }).sort((a,b)=>String(a.nombre||'').localeCompare(String(b.nombre||''),'es',{sensitivity:'base'}));
  const box=document.getElementById('workersList');if(!box)return;
  if(!rows.length){box.innerHTML='<div class="record">No hay trabajadores que coincidan con estos filtros.</div>';updateWorkerSummary();return}
- box.innerHTML=rows.map(x=>`<div class="record worker-card ${x.activo===false?'inactive':''}"><b>${esc(x.nombre)}</b> · ${esc(x.dni_nie)}<br>${esc(x.restaurante)} · ${esc(workerDepartment(x))} · ${esc(x.puesto)}<br>WhatsApp: ${esc(x.whatsapp||'—')}<br><span class="worker-status ${x.activo===false?'off':''}">${x.activo===false?'BAJA':'ACTIVO'}</span> · <span class="${signed.has(workerKey(x))?'sig-ok':'sig-pending'}">${signed.has(workerKey(x))?'V'+VERSION+' FIRMADA':'V'+VERSION+' PENDIENTE'}</span><div class="record-actions"><button class="secondary" onclick="editWorker('${x.id}')">EDITAR</button><button class="secondary" onclick="toggleWorker('${x.id}')">${x.activo===false?'REACTIVAR':'DAR DE BAJA'}</button>${x.activo!==false&&!signed.has(workerKey(x))&&x.whatsapp?`<button class="primary" onclick="sendWorkerWhatsApp('${x.id}')">WHATSAPP</button>`:''}</div></div>`).join('');
+ box.innerHTML=rows.map(x=>`<div class="record worker-card ${x.activo===false?'inactive':''}"><b>${esc(x.nombre)}</b> · ${esc(x.dni_nie)}<br>${esc(x.restaurante)} · ${esc(workerDepartment(x))} · ${esc(x.puesto)}<br>WhatsApp: ${esc(x.whatsapp||'—')}<br><span class="worker-status ${x.activo===false?'off':''}">${x.activo===false?'BAJA':'ACTIVO'}</span> · <span class="${signed.has(workerKey(x))?'sig-ok':'sig-pending'}">${signed.has(workerKey(x))?'V'+VERSION+' FIRMADA':'V'+VERSION+' PENDIENTE'}</span><div class="record-actions"><button class="secondary" onclick="editWorker('${x.id}')">EDITAR</button><button class="secondary" onclick="toggleWorker('${x.id}')">${x.activo===false?'REACTIVAR':'DAR DE BAJA'}</button>${x.activo!==false&&!signed.has(workerKey(x))&&x.whatsapp?`<button class="primary" onclick="sendWorkerWhatsApp('${x.id}')">WHATSAPP</button><button class="secondary" onclick="copyWorkerWhatsApp('${x.id}')">COPIAR MENSAJE</button>`:''}</div></div>`).join('');
  updateWorkerSummary();
 }
 function pendingWorkers(){
@@ -718,7 +718,7 @@ function renderPendingWorkers(){
  }
  box.innerHTML=Object.keys(groups).sort().map(key=>
   `<section class="restaurant-archive"><h3 class="restaurant-archive-title">${esc(key)} · ${groups[key].length} pendientes</h3><div class="restaurant-archive-body">`+
-  groups[key].map(x=>`<div class="record"><b>${esc(x.nombre)}</b> · ${esc(x.dni_nie)}<br>${esc(x.puesto)} · ${esc(x.whatsapp||'Sin teléfono')}<div class="record-actions">${x.whatsapp?`<button class="primary" onclick="sendWorkerWhatsApp('${x.id}')">ENVIAR POR WHATSAPP</button>`:'<span class="small">Añade su teléfono en Trabajadores para enviar el enlace.</span>'}</div></div>`).join('')+
+  groups[key].map(x=>`<div class="record"><b>${esc(x.nombre)}</b> · ${esc(x.dni_nie)}<br>${esc(x.puesto)} · ${esc(x.whatsapp||'Sin teléfono')}<div class="record-actions">${x.whatsapp?`<button class="primary" onclick="sendWorkerWhatsApp('${x.id}')">ENVIAR POR WHATSAPP</button><button class="secondary" onclick="copyWorkerWhatsApp('${x.id}')">COPIAR MENSAJE</button>`:'<span class="small">Añade su teléfono en Trabajadores para enviar el enlace.</span>'}</div></div>`).join('')+
   '</div></section>'
  ).join('');
 }
@@ -732,24 +732,57 @@ function updateWorkerSummary(){
  set('workersSigned',signedHistoryLoaded?active.length-pending.length:'—');
  set('workersPending',signedHistoryLoaded?pending.length:'—');
 }
-async function sendWorkerWhatsApp(id){
+// Un mismo mensaje individual se prepara tanto para el envío directo como para copiarlo.
+// El token se crea en Supabase al pulsar un botón, nunca en el navegador antes de la acción.
+async function prepareWorkerWhatsApp(id){
  const worker=workersRecords.find(x=>String(x.id)===String(id));
- if(!worker || !worker.whatsapp)return alert('El trabajador no tiene teléfono de WhatsApp.');
- if(!/^https:\/\//.test(location.href))return alert('Los enlaces deben generarse desde la aplicación publicada en HTTPS.');
- if(!signedHistoryLoaded)return alert('Primero hay que consultar el histórico de firmas para evitar duplicados.');
- if(signedCurrentSet().has(workerKey(worker)))return alert('Este trabajador ya firmó esta versión.');
+ if(!worker || !worker.whatsapp){alert('El trabajador no tiene teléfono de WhatsApp.');return null;}
+ if(!/^https:\/\//.test(location.href)){alert('Los enlaces deben generarse desde la aplicación publicada en HTTPS.');return null;}
+ if(!signedHistoryLoaded){alert('Primero hay que consultar el histórico de firmas para evitar duplicados.');return null;}
+ if(signedCurrentSet().has(workerKey(worker))){alert('Este trabajador ya firmó esta versión.');return null;}
  const digits=String(worker.whatsapp).replace(/\D/g,'');
  const phone=digits.length===9?'34'+digits:digits;
- if(phone.length<10 || phone.length>15)return alert('Revisa el número de WhatsApp del trabajador.');
+ if(phone.length<10 || phone.length>15){alert('Revisa el número de WhatsApp del trabajador.');return null;}
  try{
   const result=await normasApi('create_invitation',{trabajador_id:Number(id)});
   if(!result.ok || !result.token)throw Error('No se pudo generar el enlace');
   const link=location.origin+location.pathname+'?normas_invite='+encodeURIComponent(result.token);
   const msg='Hola '+worker.nombre+', te enviamos las Normas Generales de Grupo Mandala, versión '+VERSION+', para leer y firmar. Este enlace personal caduca en 7 días y se puede utilizar una sola vez: '+link;
-  const wa='https://wa.me/'+phone+'?text='+encodeURIComponent(msg);
-  // En Android el navegador puede bloquear window.open después de una operación asíncrona.
-  location.assign(wa);
- }catch(e){alert('No se pudo preparar WhatsApp: '+e.message)}
+  return {phone,msg};
+ }catch(e){alert('No se pudo preparar el mensaje: '+e.message);return null;}
+}
+async function sendWorkerWhatsApp(id){
+ const prepared=await prepareWorkerWhatsApp(id);
+ if(!prepared)return;
+ // Conservamos el envío directo original, sin guardar al destinatario en Contactos.
+ location.assign('https://wa.me/'+prepared.phone+'?text='+encodeURIComponent(prepared.msg));
+}
+async function copyWorkerWhatsApp(id){
+ const prepared=await prepareWorkerWhatsApp(id);
+ if(!prepared)return;
+ const message=prepared.msg;
+ let copied=false;
+ if(navigator.clipboard && window.isSecureContext){
+  try{await navigator.clipboard.writeText(message);copied=true;}catch(e){}
+ }
+ if(!copied){
+  // Respaldo compatible con móviles cuando Clipboard API rechaza la acción
+  // después de esperar a la generación del enlace en Supabase.
+  const field=document.createElement('textarea');
+  field.value=message;
+  field.setAttribute('readonly','');
+  field.style.cssText='position:fixed;left:0;top:0;width:1px;height:1px;opacity:0;';
+  document.body.appendChild(field);
+  field.focus();field.select();field.setSelectionRange(0,message.length);
+  try{copied=document.execCommand('copy');}catch(e){}
+  field.remove();
+ }
+ if(copied){
+  alert('Mensaje copiado con el enlace individual de firma. Abre la conversación de WhatsApp del trabajador, pega el mensaje y envíalo.');
+ }else{
+  // Último respaldo: ofrecer el texto completo para copiarlo manualmente.
+  prompt('No se pudo copiar automáticamente. Mantén pulsado el mensaje, cópialo y pégalo en WhatsApp:',message);
+ }
 }
 
 </script></body></html>
