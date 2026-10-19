@@ -195,7 +195,7 @@ button.primary,.primary,.management-link{background:linear-gradient(135deg,#c994
   <div id="loginPanel">
    <p>Acceso restringido.</p>
    <label>Usuario</label><select id="mgrUser">
-<option value="Felipe Izquierdo">Felipe Izquierdo · Gerencia</option>
+<option value="Felipe Izquierdo">Felipe Esquerdo · Gerencia</option>
 <option value="Vicent Giménez">Vicent Giménez · Gerencia</option>
 <option value="Gustavo Vinazza">Gustavo Vinazza · Supervisión</option>
 <option value="Pedro Jorro">Pedro Jorro · Supervisión</option>
@@ -492,7 +492,7 @@ async function normasApi(action,payload={},auth=true){
 async function managementLogin(){
  const u=document.getElementById('mgrUser').value,c=document.getElementById('mgrCode').value;
  try{const r=await normasApi('login',{nombre:u,pin:c},false);normasSessionToken=r.token;loggedManagementUser=u;
- document.getElementById('loggedUser').textContent=u;document.getElementById('loggedRole').textContent=MANAGEMENT_USERS[u]?.role||'Administración';
+ document.getElementById('loggedUser').textContent=(u==='Felipe Izquierdo'?'Felipe Esquerdo':u);document.getElementById('loggedRole').textContent=MANAGEMENT_USERS[u]?.role||'Administración';
  document.getElementById('loginPanel').style.display='none';document.getElementById('historyPanel').style.display='block';
  document.getElementById('mgrCode').value='';await refreshManagementData();showMgrSection('workers');
  }catch(e){alert('No se pudo iniciar sesión: '+e.message)}
